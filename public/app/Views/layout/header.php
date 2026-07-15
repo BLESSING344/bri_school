@@ -1,8 +1,3 @@
-<?php
-require_once __DIR__ . '/auth.php';
-requireLogin();
-$current_user = getCurrentUser($pdo);
-?>
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -11,15 +6,15 @@ $current_user = getCurrentUser($pdo);
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <title>BRI School Management - <?php echo isset($page_title) ? $page_title : 'Dashboard'; ?></title>
-      <link rel="icon" href="../images/fevicon.png" type="image/png" />
-      <link rel="stylesheet" href="../css/bootstrap.min.css" />
-      <link rel="stylesheet" href="../style.css" />
-      <link rel="stylesheet" href="../css/responsive.css" />
-      <link rel="stylesheet" href="../css/bootstrap-select.css" />
-      <link rel="stylesheet" href="../css/perfect-scrollbar.css" />
-      <link rel="stylesheet" href="../css/custom.css" />
-      <link rel="stylesheet" href="../css/flaticon.css" />
-      <link rel="stylesheet" href="../css/font-awesome.min.css" />
+      <link rel="icon" href="/images/fevicon.png" type="image/png" />
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="/style.css" />
+      <link rel="stylesheet" href="/css/responsive.css" />
+      <link rel="stylesheet" href="/css/bootstrap-select.css" />
+      <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
+      <link rel="stylesheet" href="/css/custom.css" />
+      <link rel="stylesheet" href="/css/flaticon.css" />
+      <link rel="stylesheet" href="/css/font-awesome.min.css" />
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -33,7 +28,7 @@ $current_user = getCurrentUser($pdo);
                <div class="sidebar_blog_1">
                   <div class="sidebar-header">
                      <div class="logo_section">
-                        <a href="index.php"><img class="logo_icon img-responsive" src="../images/logo/logo_icon.png" alt="#" /></a>
+                        <a href="/dashboard/index.php"><img class="logo_icon img-responsive" src="/images/logo/logo_icon.png" alt="#" /></a>
                      </div>
                   </div>
                   <div class="sidebar_user_info">
@@ -50,55 +45,55 @@ $current_user = getCurrentUser($pdo);
                   <h4>Main Menu</h4>
                   <ul class="list-unstyled components">
                      <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
-                        <a href="index.php"><i class="fa fa-dashboard yellow_color"></i> <span>Dashboard</span></a>
+                        <a href="/dashboard/index.php"><i class="fa fa-dashboard yellow_color"></i> <span>Dashboard</span></a>
                      </li>
-                     
-                     <?php if (isAdmin() || isTeacher()): ?>
+
+                     <?php if ($is_admin || $is_teacher): ?>
                      <li>
                         <a href="#academics" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-graduation-cap orange_color"></i> <span>Academics</span></a>
                         <ul class="collapse list-unstyled <?php echo (strpos($_SERVER['PHP_SELF'], 'students') !== false || strpos($_SERVER['PHP_SELF'], 'teachers') !== false || strpos($_SERVER['PHP_SELF'], 'classes') !== false || strpos($_SERVER['PHP_SELF'], 'attendance') !== false || strpos($_SERVER['PHP_SELF'], 'exams') !== false) ? 'show' : ''; ?>" id="academics">
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'students') !== false) ? 'active' : ''; ?>">
-                              <a href="students.php"><i class="fa fa-users blue1_color"></i> <span>Students</span></a>
+                              <a href="/dashboard/students.php"><i class="fa fa-users blue1_color"></i> <span>Students</span></a>
                            </li>
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'teachers') !== false) ? 'active' : ''; ?>">
-                              <a href="teachers.php"><i class="fa fa-user green_color"></i> <span>Teachers</span></a>
+                              <a href="/dashboard/teachers.php"><i class="fa fa-user green_color"></i> <span>Teachers</span></a>
                            </li>
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'classes') !== false) ? 'active' : ''; ?>">
-                              <a href="classes.php"><i class="fa fa-building orange_color"></i> <span>Classes</span></a>
+                              <a href="/dashboard/classes.php"><i class="fa fa-building orange_color"></i> <span>Classes</span></a>
                            </li>
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'attendance') !== false) ? 'active' : ''; ?>">
-                              <a href="attendance.php"><i class="fa fa-check-square purple_color"></i> <span>Attendance</span></a>
+                              <a href="/dashboard/attendance.php"><i class="fa fa-check-square purple_color"></i> <span>Attendance</span></a>
                            </li>
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'exams') !== false) ? 'active' : ''; ?>">
-                              <a href="exams.php"><i class="fa fa-file-text red_color"></i> <span>Exams & Marks</span></a>
+                              <a href="/dashboard/exams.php"><i class="fa fa-file-text red_color"></i> <span>Exams & Marks</span></a>
                            </li>
                         </ul>
                      </li>
                      <?php endif; ?>
-                     
-                     <?php if (isAdmin() || isBursar()): ?>
+
+                     <?php if ($is_admin || $is_bursar): ?>
                      <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'fees') !== false) ? 'active' : ''; ?>">
-                        <a href="fees.php"><i class="fa fa-money yellow_color"></i> <span>Fees & Payments</span></a>
+                        <a href="/dashboard/fees.php"><i class="fa fa-money yellow_color"></i> <span>Fees & Payments</span></a>
                      </li>
                      <?php endif; ?>
-                     
-                     <?php if (isAdmin()): ?>
+
+                     <?php if ($is_admin): ?>
                      <li>
                         <a href="#administration" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-cog blue2_color"></i> <span>Administration</span></a>
                         <ul class="collapse list-unstyled <?php echo (strpos($_SERVER['PHP_SELF'], 'users') !== false) ? 'show' : ''; ?>" id="administration">
                            <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'users') !== false) ? 'active' : ''; ?>">
-                              <a href="users.php"><i class="fa fa-cog blue2_color"></i> <span>User Management</span></a>
+                              <a href="/dashboard/users.php"><i class="fa fa-cog blue2_color"></i> <span>User Management</span></a>
                            </li>
                         </ul>
                      </li>
                      <?php endif; ?>
-                     
+
                      <li class="<?php echo (strpos($_SERVER['PHP_SELF'], 'profile') !== false) ? 'active' : ''; ?>">
-                        <a href="profile.php"><i class="fa fa-user-circle blue2_color"></i> <span>My Profile</span></a>
+                        <a href="/dashboard/profile.php"><i class="fa fa-user-circle blue2_color"></i> <span>My Profile</span></a>
                      </li>
-                     
+
                      <li class="mt-3">
-                        <a href="../logout.php"><i class="fa fa-sign-out red_color"></i> <span>Logout</span></a>
+                        <a href="/logout.php"><i class="fa fa-sign-out red_color"></i> <span>Logout</span></a>
                      </li>
                   </ul>
                </div>
@@ -112,7 +107,7 @@ $current_user = getCurrentUser($pdo);
                      <div class="full">
                         <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i class="fa fa-bars"></i></button>
                         <div class="logo_section">
-                           <a href="index.php"><img class="img-responsive" src="../images/logo/logo.png" alt="#" /></a>
+                           <a href="/dashboard/index.php"><img class="img-responsive" src="/images/logo/logo.png" alt="#" /></a>
                         </div>
                         <div class="right_topbar">
                            <div class="icon_info">
@@ -123,10 +118,10 @@ $current_user = getCurrentUser($pdo);
                                        <span class="badge badge-primary ml-2"><?php echo ucfirst($current_user['role'] ?? 'User'); ?></span>
                                     </a>
                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="index.php"><i class="fa fa-dashboard"></i> Dashboard</a>
-                      <a class="dropdown-item" href="profile.php"><i class="fa fa-user-circle"></i> My Profile</a>
+                      <a class="dropdown-item" href="/dashboard/index.php"><i class="fa fa-dashboard"></i> Dashboard</a>
+                      <a class="dropdown-item" href="/dashboard/profile.php"><i class="fa fa-user-circle"></i> My Profile</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="../logout.php"><span>Log Out</span> <i class="fa fa-sign-out"></i></a>
+                      <a class="dropdown-item" href="/logout.php"><span>Log Out</span> <i class="fa fa-sign-out"></i></a>
                    </div>
                                  </li>
                               </ul>

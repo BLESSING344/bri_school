@@ -1,10 +1,5 @@
 <?php
-session_start();
 
-// Destroy all session data
-session_destroy();
+require_once __DIR__ . '/app/bootstrap.php';
 
-// Redirect to login page
-header('Location: login.php');
-exit();
-?>
+(new App\Controllers\AuthController())->logout();
