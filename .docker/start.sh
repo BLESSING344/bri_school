@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+cd /var/www/html
+
 echo "Waiting for Postgres at ${DB_HOST:-db}:${DB_PORT:-5432}..."
 until php -r "
 try {
@@ -14,7 +16,8 @@ try {
 done
 echo "Postgres is up."
 
-echo "Running database seed (idempotent)..."
+# Creates the schema (if missing) and seeds sample data. Safe to re-run on
+# every deploy/restart: every insert is guarded by an existence check.
 php /var/www/html/public/database/seed.php || echo "Seed script reported an error (continuing to start the server)."
 
-exec "$@"
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

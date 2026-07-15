@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: bri-school
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health.php
+    envVars:
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: bri-school-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: bri-school-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: bri-school-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: bri-school-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: bri-school-db
+          property: password
+
+databases:
+  - name: bri-school-db
+    databaseName: bri_school
+    plan: free

@@ -1,29 +1,29 @@
-FROM php:8.2-apache
+FROM php:8.4-fpm-alpine
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libpq-dev \
-    && docker-php-ext-install pdo pdo_pgsql \
-    && a2enmod rewrite \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-
-RUN sed -ri -e "s!/var/www/html!\${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf \
-    && sed -ri -e "s!/var/www/!\${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
-    && printf '<Directory /var/www/html/public>\n    AllowOverride All\n</Directory>\n' > /etc/apache2/conf-available/bri-school.conf \
-    && a2enconf bri-school
+RUN apk add --no-cache \
+    nginx \
+    supervisor \
+    postgresql-dev \
+    curl \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        pgsql \
+        opcache
 
 WORKDIR /var/www/html
 
-COPY . /var/www/html
+COPY . .
 
 RUN chown -R www-data:www-data /var/www/html
 
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY .docker/nginx.conf /etc/nginx/nginx.conf
+COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY .docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-EXPOSE 80
+EXPOSE 8080
 
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["apache2-foreground"]
+COPY .docker/start.sh /start.sh
+RUN chmod +x /start.sh
+
+CMD ["/start.sh"]

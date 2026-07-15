@@ -56,6 +56,20 @@ idempotent.
 | `peter.teacher`  | `teacher123`| teacher |
 | `sarah.bursar`   | `bursar123` | bursar  |
 
+## Deploying to Render
+
+`render.yaml` provisions a Docker web service plus a managed Postgres
+database. From the Render dashboard, create a new Blueprint pointing at this
+repo — it will pick up `render.yaml` automatically and wire the `DB_*` env
+vars from the managed database into the web service.
+
+The container (`Dockerfile` + `.docker/`) runs nginx and PHP-FPM under
+supervisord in a single image, listening on port 8080 — the same image is
+used for both Render and local `docker compose`. On boot, `.docker/start.sh`
+waits for Postgres, runs `public/database/seed.php` (idempotent), then starts
+the server. Render's health check hits `/health.php`, a dependency-free
+endpoint that doesn't touch the database.
+
 ## Running without Docker
 
 1. Copy `.env.example` to `.env` and point `DB_*` at a Postgres instance you control.
