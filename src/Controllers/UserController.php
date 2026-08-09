@@ -52,11 +52,11 @@ class UserController extends Controller
             $role = $this->input('role');
 
             if ($users->usernameExists($username)) {
-                $this->redirect('/dashboard/users.php?error=' . rawurlencode('Username already exists'));
+                $this->redirect('/dashboard/users?error=' . rawurlencode('Username already exists'));
             }
 
             $users->createUser($username, $password, $fullName, $role);
-            $this->redirect('/dashboard/users.php?success=' . rawurlencode('User added successfully'));
+            $this->redirect('/dashboard/users?success=' . rawurlencode('User added successfully'));
         } elseif ($action === 'edit') {
             $id = $this->input('id');
             $username = trim($this->input('username', ''));
@@ -65,27 +65,27 @@ class UserController extends Controller
             $isActive = isset($_POST['is_active']) ? 1 : 0;
 
             if ($users->usernameExists($username, $id)) {
-                $this->redirect('/dashboard/users.php?error=' . rawurlencode('Username already exists'));
+                $this->redirect('/dashboard/users?error=' . rawurlencode('Username already exists'));
             }
 
             $users->updateUser($id, $username, $fullName, $role, $isActive);
-            $this->redirect('/dashboard/users.php?success=' . rawurlencode('User updated successfully'));
+            $this->redirect('/dashboard/users?success=' . rawurlencode('User updated successfully'));
         } elseif ($action === 'change_password') {
             $id = $this->input('id');
             $password = $this->input('password', '');
 
             $users->changePassword($id, $password);
-            $this->redirect('/dashboard/users.php?success=' . rawurlencode('Password changed successfully'));
+            $this->redirect('/dashboard/users?success=' . rawurlencode('Password changed successfully'));
         } elseif ($action === 'delete') {
             $id = $this->input('id');
 
             // Prevent deleting own account
             if ($id == ($_SESSION['user_id'] ?? null)) {
-                $this->redirect('/dashboard/users.php?error=' . rawurlencode('Cannot delete your own account'));
+                $this->redirect('/dashboard/users?error=' . rawurlencode('Cannot delete your own account'));
             }
 
             $users->delete($id);
-            $this->redirect('/dashboard/users.php?success=' . rawurlencode('User deleted successfully'));
+            $this->redirect('/dashboard/users?success=' . rawurlencode('User deleted successfully'));
         }
     }
 }

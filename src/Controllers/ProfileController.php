@@ -42,23 +42,23 @@ class ProfileController extends Controller
             $username = trim($this->input('username', ''));
 
             if ($fullName === '' || $username === '') {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Full name and username are required'));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('Full name and username are required'));
             }
 
             try {
                 if ($users->usernameExists($username, $currentUserId)) {
-                    $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Username already taken by another user'));
+                    $this->redirect('/dashboard/profile?error=' . rawurlencode('Username already taken by another user'));
                 }
 
                 if ($users->update($currentUserId, ['full_name' => $fullName, 'username' => $username])) {
                     $_SESSION['full_name'] = $fullName;
                     $_SESSION['username'] = $username;
-                    $this->redirect('/dashboard/profile.php?success=' . rawurlencode('Profile updated successfully'));
+                    $this->redirect('/dashboard/profile?success=' . rawurlencode('Profile updated successfully'));
                 } else {
-                    $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Failed to update profile'));
+                    $this->redirect('/dashboard/profile?error=' . rawurlencode('Failed to update profile'));
                 }
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'change_password') {
             $currentPassword = $this->input('current_password', '');
@@ -66,33 +66,33 @@ class ProfileController extends Controller
             $confirmPassword = $this->input('confirm_password', '');
 
             if ($currentPassword === '' || $newPassword === '' || $confirmPassword === '') {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('All password fields are required'));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('All password fields are required'));
             }
 
             if ($newPassword !== $confirmPassword) {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('New passwords do not match'));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('New passwords do not match'));
             }
 
             if (strlen($newPassword) < 6) {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('New password must be at least 6 characters long'));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('New password must be at least 6 characters long'));
             }
 
             try {
                 $user = $users->find($currentUserId);
 
                 if (!$user || !password_verify($currentPassword, $user['password'])) {
-                    $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Current password is incorrect'));
+                    $this->redirect('/dashboard/profile?error=' . rawurlencode('Current password is incorrect'));
                 }
 
                 $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
 
                 if ($users->update($currentUserId, ['password' => $newPasswordHash])) {
-                    $this->redirect('/dashboard/profile.php?success=' . rawurlencode('Password changed successfully'));
+                    $this->redirect('/dashboard/profile?success=' . rawurlencode('Password changed successfully'));
                 } else {
-                    $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Failed to change password'));
+                    $this->redirect('/dashboard/profile?error=' . rawurlencode('Failed to change password'));
                 }
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/profile.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/profile?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         }
     }

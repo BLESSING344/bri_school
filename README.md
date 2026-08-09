@@ -22,20 +22,22 @@ db/
   schema.sql         # Postgres DDL
   seed.php            # idempotent seeder with realistic sample data
 public/
-  dashboard/*.php        # thin entry scripts, e.g. `(new App\Controllers\StudentController())->index();`
-  login.php, logout.php, index.php   # auth entry scripts
+  index.php              # single front controller — routes every request
   css/, js/, images/, fonts/          # static assets
 ```
 
 Only `public/` is the web server's document root. `src/` and `db/` sit
 outside it, so application code and the seeder are never reachable by a
 direct HTTP request no matter how the web server is configured — the only
-way in is through the thin entry scripts.
+way in is through `public/index.php`.
 
-Each page under `public/dashboard/*.php` is a thin front controller that
-delegates to a `Controller` class, which uses a `Model` for data access and
-renders a `View`. URLs are unchanged from the original app, so no links or
-bookmarks break.
+`public/index.php` is the single front controller: every request (real or
+not) falls through to it via nginx's `try_files ... /index.php` (and the
+PHP built-in dev server's equivalent fallback), and a small route table
+inside it maps clean paths like `/dashboard/students` to a `Controller`
+class and method, which uses a `Model` for data access and renders a
+`View`. There are no `.php` extensions in any app URL, and no file-per-page
+mapping — the URL space is defined entirely by the route table.
 
 ## Running with Docker (recommended)
 
@@ -83,12 +85,13 @@ endpoint that doesn't touch the database.
 
 ## Notes
 
-- `public/dashboard/dashboard.php` and `public/dashboard/dashboard_2.php` are
-  unmodified leftovers from the original admin HTML template — they aren't
-  linked from the app's navigation and were left as-is rather than converted,
-  since they carry no real functionality.
-- `public/dashboard/settings.php` was, in the original codebase, also just
-  static template demo content with no backend logic. It's been wired into
-  the MVC structure (admin-gated) and a `settings` key/value table +
+- The original codebase's `dashboard/settings.php` was just static template
+  demo content with no backend logic. It's been wired into the MVC structure
+  (admin-gated, at `/dashboard/settings`) and a `settings` key/value table +
   `SettingModel` scaffold exist in the schema, but no real settings form has
   been built yet — let us know if you want one.
+- Two other original files, `dashboard/dashboard.php` and
+  `dashboard/dashboard_2.php`, were unmodified admin-template leftovers with
+  no real functionality and weren't linked from the app's navigation. They
+  were dropped entirely rather than converted, since the new front
+  controller only serves routes it explicitly knows about.

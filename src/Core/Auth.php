@@ -99,7 +99,7 @@ class Auth
     public static function requireLogin(): void
     {
         if (!self::check()) {
-            header('Location: /login.php');
+            header('Location: /login');
             exit();
         }
     }
@@ -112,7 +112,7 @@ class Auth
         self::requireLogin();
         $roles = is_array($roles) ? $roles : [$roles];
         if (!in_array(self::role(), $roles, true)) {
-            header('Location: /dashboard/index.php?error=access_denied');
+            header('Location: /dashboard?error=access_denied');
             exit();
         }
     }

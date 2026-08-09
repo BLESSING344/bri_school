@@ -60,7 +60,7 @@ class ClassController extends Controller
                 'teacher_in_charge' => trim($this->input('teacher_in_charge', '')),
             ];
             $classes->insert($data);
-            $this->redirect('/dashboard/classes.php?success=' . rawurlencode('Class added successfully'));
+            $this->redirect('/dashboard/classes?success=' . rawurlencode('Class added successfully'));
         } elseif ($action === 'edit') {
             $id = $this->input('id');
             $data = [
@@ -68,11 +68,11 @@ class ClassController extends Controller
                 'teacher_in_charge' => trim($this->input('teacher_in_charge', '')),
             ];
             $classes->update($id, $data);
-            $this->redirect('/dashboard/classes.php?success=' . rawurlencode('Class updated successfully'));
+            $this->redirect('/dashboard/classes?success=' . rawurlencode('Class updated successfully'));
         } elseif ($action === 'delete') {
             $id = $this->input('id');
             $classes->delete($id);
-            $this->redirect('/dashboard/classes.php?success=' . rawurlencode('Class deleted successfully'));
+            $this->redirect('/dashboard/classes?success=' . rawurlencode('Class deleted successfully'));
         }
     }
 }

@@ -86,9 +86,9 @@ class FeesController extends Controller
 
             try {
                 $fees->insert($data);
-                $this->redirect('/dashboard/fees.php?success=' . rawurlencode('Payment recorded successfully'));
+                $this->redirect('/dashboard/fees?success=' . rawurlencode('Payment recorded successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/fees.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/fees?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'update_payment') {
             $id = $this->input('id');
@@ -100,18 +100,18 @@ class FeesController extends Controller
 
             try {
                 $fees->update($id, $data);
-                $this->redirect('/dashboard/fees.php?success=' . rawurlencode('Payment updated successfully'));
+                $this->redirect('/dashboard/fees?success=' . rawurlencode('Payment updated successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/fees.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/fees?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'delete_payment') {
             $id = $this->input('id');
 
             try {
                 $fees->delete($id);
-                $this->redirect('/dashboard/fees.php?success=' . rawurlencode('Payment record deleted successfully'));
+                $this->redirect('/dashboard/fees?success=' . rawurlencode('Payment record deleted successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/fees.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/fees?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         }
     }

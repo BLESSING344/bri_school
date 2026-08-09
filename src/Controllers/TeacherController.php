@@ -69,7 +69,7 @@ class TeacherController extends Controller
                 'class_assigned' => trim($this->input('class_assigned', '')),
             ];
             $teachers->insert($data);
-            $this->redirect('/dashboard/teachers.php?success=' . rawurlencode('Teacher added successfully'));
+            $this->redirect('/dashboard/teachers?success=' . rawurlencode('Teacher added successfully'));
         } elseif ($action === 'edit') {
             $id = $this->input('id');
             $data = [
@@ -80,20 +80,20 @@ class TeacherController extends Controller
                 'class_assigned' => trim($this->input('class_assigned', '')),
             ];
             $teachers->update($id, $data);
-            $this->redirect('/dashboard/teachers.php?success=' . rawurlencode('Teacher updated successfully'));
+            $this->redirect('/dashboard/teachers?success=' . rawurlencode('Teacher updated successfully'));
         } elseif ($action === 'delete') {
             $id = $this->input('id');
             $teachers->delete($id);
-            $this->redirect('/dashboard/teachers.php?success=' . rawurlencode('Teacher deleted successfully'));
+            $this->redirect('/dashboard/teachers?success=' . rawurlencode('Teacher deleted successfully'));
         } elseif ($action === 'import_from_user') {
             $fullName = trim($this->input('full_name', ''));
 
             if ($teachers->existsByName($fullName)) {
-                $this->redirect('/dashboard/teachers.php?error=' . rawurlencode('Teacher already exists'));
+                $this->redirect('/dashboard/teachers?error=' . rawurlencode('Teacher already exists'));
             }
 
             $teachers->insert(['full_name' => $fullName]);
-            $this->redirect('/dashboard/teachers.php?success=' . rawurlencode('Teacher imported from user successfully'));
+            $this->redirect('/dashboard/teachers?success=' . rawurlencode('Teacher imported from user successfully'));
         }
     }
 }

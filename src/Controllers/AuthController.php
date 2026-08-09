@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function login(): void
     {
         if (Auth::check()) {
-            $this->redirect('/dashboard/index.php');
+            $this->redirect('/dashboard');
         }
 
         $error_message = '';
@@ -25,7 +25,7 @@ class AuthController extends Controller
                 $result = Auth::attempt($username, $password);
 
                 if ($result === true) {
-                    $this->redirect('/dashboard/index.php');
+                    $this->redirect('/dashboard');
                 } elseif ($result === 'inactive') {
                     $error_message = 'Your account has been deactivated. Please contact administrator.';
                 } else {
@@ -40,6 +40,6 @@ class AuthController extends Controller
     public function logout(): void
     {
         Auth::logout();
-        $this->redirect('/login.php');
+        $this->redirect('/login');
     }
 }

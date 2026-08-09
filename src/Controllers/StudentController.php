@@ -65,9 +65,9 @@ class StudentController extends Controller
 
             try {
                 $students->insert($data);
-                $this->redirect('/dashboard/students.php?success=' . rawurlencode('Student added successfully'));
+                $this->redirect('/dashboard/students?success=' . rawurlencode('Student added successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/students.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/students?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'edit') {
             $id = $this->input('id');
@@ -81,18 +81,18 @@ class StudentController extends Controller
 
             try {
                 $students->update($id, $data);
-                $this->redirect('/dashboard/students.php?success=' . rawurlencode('Student updated successfully'));
+                $this->redirect('/dashboard/students?success=' . rawurlencode('Student updated successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/students.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/students?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'delete') {
             $id = $this->input('id');
 
             try {
                 $students->delete($id);
-                $this->redirect('/dashboard/students.php?success=' . rawurlencode('Student deleted successfully'));
+                $this->redirect('/dashboard/students?success=' . rawurlencode('Student deleted successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/students.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/students?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         }
     }

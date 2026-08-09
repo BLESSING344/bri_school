@@ -142,7 +142,7 @@
                                              </tbody>
                                           </table>
                                           <div class="text-center mt-2">
-                                             <a href="/dashboard/students.php" class="btn btn-primary btn-sm">View All Students</a>
+                                             <a href="/dashboard/students" class="btn btn-primary btn-sm">View All Students</a>
                                           </div>
                                        </div>
                                     </div>
@@ -193,7 +193,7 @@
                                              </tbody>
                                           </table>
                                           <div class="text-center mt-2">
-                                             <a href="/dashboard/attendance.php" class="btn btn-primary btn-sm">View Attendance</a>
+                                             <a href="/dashboard/attendance" class="btn btn-primary btn-sm">View Attendance</a>
                                           </div>
                                        </div>
                                     </div>
@@ -249,7 +249,7 @@
                                              </tbody>
                                           </table>
                                           <div class="text-center mt-2">
-                                             <a href="/dashboard/fees.php" class="btn btn-primary btn-sm">View All Payments</a>
+                                             <a href="/dashboard/fees" class="btn btn-primary btn-sm">View All Payments</a>
                                           </div>
                                        </div>
                                     </div>

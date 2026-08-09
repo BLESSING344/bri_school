@@ -98,7 +98,7 @@
                             <?php endforeach; ?>
                         </select>
                         <?php if (empty($teachers_list)): ?>
-                            <small class="text-muted">No teachers found. <a href="/dashboard/teachers.php">Add teachers first</a></small>
+                            <small class="text-muted">No teachers found. <a href="/dashboard/teachers">Add teachers first</a></small>
                         <?php endif; ?>
                     </div>
                 </div>

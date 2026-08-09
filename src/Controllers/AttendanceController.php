@@ -61,9 +61,9 @@ class AttendanceController extends Controller
 
             try {
                 $attendance->markAttendance($studentId, $date, $status, $recordedBy);
-                $this->redirect('/dashboard/attendance.php?success=' . rawurlencode('Attendance marked successfully'));
+                $this->redirect('/dashboard/attendance?success=' . rawurlencode('Attendance marked successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/attendance.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/attendance?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'bulk_mark') {
             $date = $this->input('bulk_date');
@@ -79,9 +79,9 @@ class AttendanceController extends Controller
                     $count++;
                 }
 
-                $this->redirect('/dashboard/attendance.php?success=' . rawurlencode('Bulk attendance marked successfully for ' . $count . ' students'));
+                $this->redirect('/dashboard/attendance?success=' . rawurlencode('Bulk attendance marked successfully for ' . $count . ' students'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/attendance.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/attendance?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         }
     }

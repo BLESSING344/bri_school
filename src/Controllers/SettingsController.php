@@ -13,7 +13,7 @@ use App\Core\Controller;
  *
  * Since this is the "Settings" page, it is gated to admins only here,
  * matching the access level implied by the rest of the admin dashboard
- * (see app/Views/layout/header.php, where the "Administration" nav section
+ * (see src/Views/layout/header.php, where the "Administration" nav section
  * — currently just User Management — is admin-only). This is a judgment
  * call, not a literal port of an original check, because none existed.
  */

@@ -51,14 +51,14 @@
                                 </td>
                                 <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
                                 <td>
-                                    <a href="/dashboard/users.php?edit=<?php echo $user['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#userModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($user)); ?>)">
+                                    <a href="/dashboard/users?edit=<?php echo $user['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#userModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($user)); ?>)">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
                                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#passwordModal" onclick="loadPasswordData(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['username']); ?>')">
                                         <i class="fa fa-key"></i> Password
                                     </button>
                                     <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                    <form method="POST" action="/dashboard/users.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                    <form method="POST" action="/dashboard/users" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
                                         <button type="submit" class="btn btn-sm btn-danger">
@@ -87,7 +87,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="/dashboard/users.php">
+            <form method="POST" action="/dashboard/users">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="<?php echo $edit_user ? 'edit' : 'add'; ?>">
                     <?php if ($edit_user): ?>
@@ -149,7 +149,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="/dashboard/users.php">
+            <form method="POST" action="/dashboard/users">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="change_password">
                     <input type="hidden" name="id" id="password_user_id">

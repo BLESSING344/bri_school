@@ -85,9 +85,9 @@ class ExamController extends Controller
 
             try {
                 $exams->insert($data);
-                $this->redirect('/dashboard/exams.php?success=' . rawurlencode('Exam created successfully'));
+                $this->redirect('/dashboard/exams?success=' . rawurlencode('Exam created successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/exams.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/exams?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'add_marks') {
             $examId = $this->input('exam_id');
@@ -109,18 +109,18 @@ class ExamController extends Controller
                     ]);
                 }
 
-                $this->redirect('/dashboard/exams.php?success=' . rawurlencode('Marks added successfully'));
+                $this->redirect('/dashboard/exams?success=' . rawurlencode('Marks added successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/exams.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/exams?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         } elseif ($action === 'delete_exam') {
             $id = $this->input('id');
 
             try {
                 $exams->delete($id);
-                $this->redirect('/dashboard/exams.php?success=' . rawurlencode('Exam deleted successfully'));
+                $this->redirect('/dashboard/exams?success=' . rawurlencode('Exam deleted successfully'));
             } catch (PDOException $e) {
-                $this->redirect('/dashboard/exams.php?error=' . rawurlencode('Error: ' . $e->getMessage()));
+                $this->redirect('/dashboard/exams?error=' . rawurlencode('Error: ' . $e->getMessage()));
             }
         }
     }

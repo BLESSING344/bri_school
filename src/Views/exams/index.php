@@ -41,7 +41,7 @@
                                 <td><?php echo htmlspecialchars($exam['year'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($exam['class'] ?? 'All'); ?></td>
                                 <td>
-                                    <a href="/dashboard/exams.php?exam_id=<?php echo $exam['id']; ?>" class="btn btn-sm btn-info">
+                                    <a href="/dashboard/exams?exam_id=<?php echo $exam['id']; ?>" class="btn btn-sm btn-info">
                                         <i class="fa fa-eye"></i> View Marks
                                     </a>
                                     <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this exam? All marks will be deleted too.');">

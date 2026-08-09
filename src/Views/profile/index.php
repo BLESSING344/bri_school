@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <form method="POST" action="/dashboard/profile.php">
+                <form method="POST" action="/dashboard/profile">
                     <input type="hidden" name="action" value="update_profile">
 
                     <div class="form-group">
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <form method="POST" action="/dashboard/profile.php" id="passwordForm">
+                <form method="POST" action="/dashboard/profile" id="passwordForm">
                     <input type="hidden" name="action" value="change_password">
 
                     <div class="form-group">

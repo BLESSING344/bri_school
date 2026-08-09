@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <form method="GET" action="/dashboard/attendance.php" class="mb-3">
+                <form method="GET" action="/dashboard/attendance" class="mb-3">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -51,7 +51,7 @@
                         <h5>Bulk Mark Attendance by Class</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="/dashboard/attendance.php">
+                        <form method="POST" action="/dashboard/attendance">
                             <input type="hidden" name="action" value="bulk_mark">
                             <div class="row">
                                 <div class="col-md-4">
@@ -139,7 +139,7 @@ function loadStudentsForAttendance(class_name) {
     // Show loading message
     document.getElementById('students_list').innerHTML = '<p class="text-info"><i class="fa fa-spinner fa-spin"></i> Loading students...</p>';
 
-    fetch('/dashboard/attendance_ajax.php?action=get_students&class=' + encodeURIComponent(class_name))
+    fetch('/dashboard/attendance/ajax?action=get_students&class=' + encodeURIComponent(class_name))
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
