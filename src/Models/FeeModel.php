@@ -35,6 +35,21 @@ class FeeModel extends Model
     }
 
     /**
+     * A single fee record joined with student info, for receipt display.
+     */
+    public function findWithStudent(int $id): ?array
+    {
+        $sql = "SELECT f.*, s.full_name AS student_name, s.class, s.parent_name, s.parent_contact
+                FROM fees f
+                JOIN students s ON f.student_id = s.id
+                WHERE f.id = ?";
+
+        $row = $this->query($sql, [$id])->fetch();
+
+        return $row ?: null;
+    }
+
+    /**
      * Totals (amount paid, balance, record count), optionally filtered by student and/or term.
      */
     public function summary(?string $studentId, ?string $term): array

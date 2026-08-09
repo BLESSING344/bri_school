@@ -71,6 +71,23 @@ class FeesController extends Controller
         ]);
     }
 
+    public function receipt(): void
+    {
+        $this->requireRole(['admin', 'bursar']);
+
+        $id = (int) $this->input('id', 0);
+        $payment = $id ? (new FeeModel())->findWithStudent($id) : null;
+
+        if (!$payment) {
+            $this->redirect('/dashboard/fees?error=' . rawurlencode('Payment record not found'));
+        }
+
+        $this->renderBare('fees/receipt', [
+            'page_title' => 'Payment Receipt',
+            'payment' => $payment,
+        ]);
+    }
+
     private function handlePost(FeeModel $fees): void
     {
         $action = $this->input('action');

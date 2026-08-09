@@ -2,6 +2,55 @@
     <div class="col-md-12">
         <div class="page_title">
             <h2>Fees Management</h2>
+            <p class="text-muted">Track payments, outstanding balances, and print receipts.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-6 col-lg-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div>
+                    <i class="fa fa-money green_color"></i>
+                </div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo number_format($summary['total_paid'] ?? 0, 2); ?></p>
+                    <p class="head_couter">Total Paid</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div>
+                    <i class="fa fa-exclamation-circle red_color"></i>
+                </div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo number_format($summary['total_balance'] ?? 0, 2); ?></p>
+                    <p class="head_couter">Outstanding Balance</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div>
+                    <i class="fa fa-list-alt blue1_color"></i>
+                </div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $summary['total_records'] ?? 0; ?></p>
+                    <p class="head_couter">Payment Records</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,39 +59,14 @@
     <div class="col-md-12">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Fees Records</h2>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#paymentModal">
+                        <i class="fa fa-plus"></i> Record Payment
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <!-- Summary Cards -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="card bg-success text-white">
-                            <div class="card-body">
-                                <h5>Total Paid</h5>
-                                <h3><?php echo number_format($summary['total_paid'] ?? 0, 2); ?></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body">
-                                <h5>Total Balance</h5>
-                                <h3><?php echo number_format($summary['total_balance'] ?? 0, 2); ?></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-info text-white">
-                            <div class="card-body">
-                                <h5>Total Records</h5>
-                                <h3><?php echo $summary['total_records'] ?? 0; ?></h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Filters -->
                 <form method="GET" class="mb-3">
                     <div class="row">
@@ -73,67 +97,76 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>&nbsp;</label>
-                                <button type="submit" class="btn btn-primary form-control">Filter</button>
+                                <button type="submit" class="btn btn-primary form-control">
+                                    <i class="fa fa-filter"></i> Filter
+                                </button>
                             </div>
                         </div>
                     </div>
                 </form>
 
-                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#paymentModal">
-                    <i class="fa fa-plus"></i> Record Payment
-                </button>
-
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Student Name</th>
-                            <th>Class</th>
-                            <th>Term</th>
-                            <th>Amount Paid</th>
-                            <th>Balance</th>
-                            <th>Payment Date</th>
-                            <th>Recorded By</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($fees_records)): ?>
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead>
                             <tr>
-                                <td colspan="9" class="text-center">No payment records found</td>
+                                <th>Student</th>
+                                <th>Class</th>
+                                <th>Term</th>
+                                <th class="text-right">Amount Paid</th>
+                                <th>Status</th>
+                                <th>Payment Date</th>
+                                <th>Recorded By</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($fees_records as $record): ?>
-                            <tr>
-                                <td><?php echo $record['id']; ?></td>
-                                <td><?php echo htmlspecialchars($record['student_name']); ?></td>
-                                <td><?php echo htmlspecialchars($record['class']); ?></td>
-                                <td><?php echo htmlspecialchars($record['term'] ?? 'N/A'); ?></td>
-                                <td><?php echo number_format($record['amount_paid'], 2); ?></td>
-                                <td>
-                                    <span class="badge <?php echo $record['balance'] > 0 ? 'badge-danger' : 'badge-success'; ?>">
-                                        <?php echo number_format($record['balance'], 2); ?>
-                                    </span>
-                                </td>
-                                <td><?php echo date('M j, Y', strtotime($record['payment_date'])); ?></td>
-                                <td><?php echo htmlspecialchars($record['recorded_by'] ?? 'N/A'); ?></td>
-                                <td>
-                                    <a href="?edit=<?php echo $record['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#paymentModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($record)); ?>)">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                    <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this payment record?');">
-                                        <input type="hidden" name="action" value="delete_payment">
-                                        <input type="hidden" name="id" value="<?php echo $record['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($fees_records)): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center">No payment records found</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($fees_records as $record): ?>
+                                <tr>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars($record['student_name']); ?></strong>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($record['class']); ?></td>
+                                    <td><?php echo htmlspecialchars($record['term'] ?? 'N/A'); ?></td>
+                                    <td class="text-right"><?php echo number_format($record['amount_paid'], 2); ?></td>
+                                    <td>
+                                        <?php if ($record['balance'] > 0): ?>
+                                            <span class="badge badge-danger">
+                                                <i class="fa fa-exclamation-circle"></i> <?php echo number_format($record['balance'], 2); ?> due
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="badge badge-success">
+                                                <i class="fa fa-check-circle"></i> Paid in full
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo date('M j, Y', strtotime($record['payment_date'])); ?></td>
+                                    <td><?php echo htmlspecialchars($record['recorded_by'] ?? 'N/A'); ?></td>
+                                    <td class="text-nowrap">
+                                        <a href="/dashboard/fees/receipt?id=<?php echo $record['id']; ?>" class="btn btn-sm btn-outline-secondary" target="_blank" title="View Receipt">
+                                            <i class="fa fa-file-text"></i>
+                                        </a>
+                                        <a href="?edit=<?php echo $record['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#paymentModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($record)); ?>)" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this payment record?');">
+                                            <input type="hidden" name="action" value="delete_payment">
+                                            <input type="hidden" name="id" value="<?php echo $record['id']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

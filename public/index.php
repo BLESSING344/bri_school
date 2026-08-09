@@ -26,6 +26,7 @@ $routes = [
     '/dashboard/attendance/ajax' => [AttendanceController::class, 'ajax'],
     '/dashboard/exams' => [ExamController::class, 'index'],
     '/dashboard/fees' => [FeesController::class, 'index'],
+    '/dashboard/fees/receipt' => [FeesController::class, 'receipt'],
     '/dashboard/users' => [UserController::class, 'index'],
     '/dashboard/profile' => [ProfileController::class, 'index'],
     '/dashboard/settings' => [SettingsController::class, 'index'],
