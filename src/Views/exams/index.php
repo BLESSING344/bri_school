@@ -1,7 +1,53 @@
+<?php
+$avgScore = $exam_marks ? array_sum(array_column($exam_marks, 'score')) / count($exam_marks) : null;
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>Exams & Marks Management</h2>
+            <p class="text-muted">Create exams and record student scores per subject.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-file-text red_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($exams); ?></p>
+                    <p class="head_couter">Total Exams</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-list-alt blue1_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($exam_marks); ?></p>
+                    <p class="head_couter"><?php echo $selected_exam ? 'Marks Recorded' : 'Select an Exam'; ?></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-line-chart green_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $avgScore !== null ? number_format($avgScore, 1) : '-'; ?></p>
+                    <p class="head_couter">Average Score</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,15 +56,15 @@
     <div class="col-md-6">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Exams</h2>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#examModal">
+                        <i class="fa fa-plus"></i> Create Exam
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#examModal">
-                    <i class="fa fa-plus"></i> Create New Exam
-                </button>
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped align-middle">
                     <thead>
                         <tr>
                             <th>Exam Name</th>
@@ -35,20 +81,20 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($exams as $exam): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($exam['exam_name']); ?></td>
-                                <td><?php echo htmlspecialchars($exam['term'] ?? 'N/A'); ?></td>
+                            <tr class="<?php echo ($selected_exam && $selected_exam['id'] == $exam['id']) ? 'table-active' : ''; ?>">
+                                <td><strong><?php echo htmlspecialchars($exam['exam_name']); ?></strong></td>
+                                <td><span class="badge badge-info"><?php echo htmlspecialchars($exam['term'] ?? 'N/A'); ?></span></td>
                                 <td><?php echo htmlspecialchars($exam['year'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($exam['class'] ?? 'All'); ?></td>
-                                <td>
-                                    <a href="/dashboard/exams?exam_id=<?php echo $exam['id']; ?>" class="btn btn-sm btn-info">
-                                        <i class="fa fa-eye"></i> View Marks
+                                <td class="text-nowrap">
+                                    <a href="/dashboard/exams?exam_id=<?php echo $exam['id']; ?>" class="btn btn-sm btn-info" title="View Marks">
+                                        <i class="fa fa-eye"></i>
                                     </a>
                                     <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this exam? All marks will be deleted too.');">
                                         <input type="hidden" name="action" value="delete_exam">
                                         <input type="hidden" name="id" value="<?php echo $exam['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-trash"></i> Delete
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -65,21 +111,21 @@
         <?php if ($selected_exam): ?>
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Marks for <?php echo htmlspecialchars($selected_exam['exam_name']); ?></h2>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#marksModal">
+                        <i class="fa fa-plus"></i> Add Marks
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#marksModal">
-                    <i class="fa fa-plus"></i> Add Marks
-                </button>
-                <table class="table table-bordered table-striped table-sm">
+                <table class="table table-bordered table-striped table-sm align-middle">
                     <thead>
                         <tr>
                             <th>Student</th>
                             <th>Class</th>
                             <th>Subject</th>
-                            <th>Score</th>
+                            <th class="text-right">Score</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,7 +139,11 @@
                                 <td><?php echo htmlspecialchars($mark['student_name']); ?></td>
                                 <td><?php echo htmlspecialchars($mark['class']); ?></td>
                                 <td><?php echo htmlspecialchars($mark['subject']); ?></td>
-                                <td><?php echo number_format($mark['score'], 2); ?></td>
+                                <td class="text-right">
+                                    <span class="badge <?php echo $mark['score'] >= 50 ? 'badge-success' : 'badge-danger'; ?>">
+                                        <?php echo number_format($mark['score'], 2); ?>
+                                    </span>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -108,8 +158,9 @@
                     <h2>Select an Exam</h2>
                 </div>
             </div>
-            <div class="table_section padding_infor_info">
-                <p class="text-muted">Click "View Marks" on an exam to see and manage marks.</p>
+            <div class="table_section padding_infor_info text-center py-5">
+                <i class="fa fa-file-text-o" style="font-size: 42px; color: #cbd3da;"></i>
+                <p class="text-muted mt-3 mb-0">Click the <i class="fa fa-eye"></i> icon on an exam to view and manage its marks.</p>
             </div>
         </div>
         <?php endif; ?>

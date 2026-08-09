@@ -1,7 +1,54 @@
+<?php
+$totalEnrolled = array_sum(array_column($classes, 'student_count'));
+$unassignedClasses = count(array_filter($classes, fn($c) => empty($c['teacher_in_charge'])));
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>Classes Management</h2>
+            <p class="text-muted">Organize classes and assign a teacher in charge of each one.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-building orange_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($classes); ?></p>
+                    <p class="head_couter">Total Classes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-users blue1_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $totalEnrolled; ?></p>
+                    <p class="head_couter">Total Enrolled Students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-question-circle red_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $unassignedClasses; ?></p>
+                    <p class="head_couter">Without a Teacher</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,46 +57,50 @@
     <div class="col-md-12">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Classes List</h2>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#classModal">
+                        <i class="fa fa-plus"></i> Add New Class
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
                 <div class="table-responsive-sm">
-                    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#classModal">
-                        <i class="fa fa-plus"></i> Add New Class
-                    </button>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Class Name</th>
                                 <th>Teacher in Charge</th>
-                                <th>Number of Students</th>
+                                <th>Students Enrolled</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($classes)): ?>
                                 <tr>
-                                    <td colspan="5" class="text-center">No classes found</td>
+                                    <td colspan="4" class="text-center">No classes found</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($classes as $class): ?>
                                 <tr>
-                                    <td><?php echo $class['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($class['class_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($class['teacher_in_charge'] ?? 'Not assigned'); ?></td>
-                                    <td><?php echo $class['student_count']; ?></td>
+                                    <td><strong><?php echo htmlspecialchars($class['class_name']); ?></strong></td>
                                     <td>
-                                        <a href="?edit=<?php echo $class['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#classModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($class)); ?>)">
-                                            <i class="fa fa-edit"></i> Edit
+                                        <?php if (!empty($class['teacher_in_charge'])): ?>
+                                            <?php echo htmlspecialchars($class['teacher_in_charge']); ?>
+                                        <?php else: ?>
+                                            <span class="badge badge-light text-muted">Not assigned</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><span class="badge badge-secondary"><?php echo $class['student_count']; ?></span></td>
+                                    <td class="text-nowrap">
+                                        <a href="?edit=<?php echo $class['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#classModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($class)); ?>)" title="Edit">
+                                            <i class="fa fa-edit"></i>
                                         </a>
                                         <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this class?');">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $class['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"></i> Delete
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>
@@ -114,7 +165,7 @@
 <script>
 function loadEditData(cls) {
     document.querySelector('input[name="class_name"]').value = cls.class_name || '';
-    document.querySelector('input[name="teacher_in_charge"]').value = cls.teacher_in_charge || '';
+    document.querySelector('select[name="teacher_in_charge"]').value = cls.teacher_in_charge || '';
     document.querySelector('input[name="action"]').value = 'edit';
     document.querySelector('input[name="id"]').value = cls.id;
     document.querySelector('.modal-title').textContent = 'Edit Class';

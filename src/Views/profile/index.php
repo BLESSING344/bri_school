@@ -1,14 +1,42 @@
+<?php
+$initials = '';
+foreach (explode(' ', trim($user_data['full_name'] ?? '')) as $part) {
+    if ($part !== '') {
+        $initials .= strtoupper($part[0]);
+    }
+}
+$initials = substr($initials, 0, 2) ?: '?';
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>My Profile</h2>
+            <p class="text-muted">Manage your account details and password.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="white_shd full margin_bottom_30">
+            <div class="table_section padding_infor_info d-flex align-items-center flex-wrap" style="gap: 20px;">
+                <div style="width: 64px; height: 64px; border-radius: 50%; background: #2f8a5b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; flex-shrink: 0;">
+                    <?php echo htmlspecialchars($initials); ?>
+                </div>
+                <div>
+                    <h4 class="mb-1"><?php echo htmlspecialchars($user_data['full_name'] ?? ''); ?></h4>
+                    <span class="badge badge-info mr-2"><?php echo ucfirst(htmlspecialchars($user_data['role'] ?? 'User')); ?></span>
+                    <span class="badge <?php echo ($user_data['is_active'] ?? 0) ? 'badge-success' : 'badge-danger'; ?>">
+                        <?php echo ($user_data['is_active'] ?? 0) ? 'Active' : 'Inactive'; ?>
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-8">
-        <!-- Profile Information -->
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
                 <div class="heading1 margin_0">
@@ -44,12 +72,6 @@
                         <input type="text" class="form-control" value="<?php echo ucfirst(htmlspecialchars($user_data['role'] ?? 'User')); ?>" disabled>
                     </div>
 
-                    <div class="form-group">
-                        <label>Account Status</label>
-                        <input type="text" class="form-control"
-                               value="<?php echo ($user_data['is_active'] ?? 0) ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>'; ?>" disabled>
-                    </div>
-
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-save"></i> Update Profile
                     </button>
@@ -59,7 +81,6 @@
     </div>
 
     <div class="col-md-4">
-        <!-- Change Password -->
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
                 <div class="heading1 margin_0">
@@ -96,7 +117,6 @@
 </div>
 
 <script>
-// Validate password match on form submit
 document.getElementById('passwordForm').addEventListener('submit', function(e) {
     var newPassword = document.getElementById('new_password').value;
     var confirmPassword = document.getElementById('confirm_password').value;

@@ -1,7 +1,54 @@
+<?php
+$assignedCount = count(array_filter($teachers, fn($t) => !empty($t['class_assigned'])));
+$unassignedCount = count($teachers) - $assignedCount;
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>Teachers Management</h2>
+            <p class="text-muted">Manage teaching staff and their class assignments.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-user green_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($teachers); ?></p>
+                    <p class="head_couter">Total Teachers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-check-square blue1_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $assignedCount; ?></p>
+                    <p class="head_couter">Assigned to a Class</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-question-circle orange_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $unassignedCount; ?></p>
+                    <p class="head_couter">Unassigned</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,40 +57,42 @@
     <div class="col-md-12">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Teachers List</h2>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#teacherModal">
+                        <i class="fa fa-plus"></i> Add New Teacher
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <div class="table-responsive-sm">
-                    <?php if (!empty($unlinked_teachers)): ?>
-                    <div class="alert alert-info mb-3">
-                        <strong><i class="fa fa-info-circle"></i> Found <?php echo count($unlinked_teachers); ?> user(s) with teacher role that need to be added to teachers list:</strong>
-                        <ul class="mb-2 mt-2">
+                <?php if (!empty($unlinked_teachers)): ?>
+                <div class="alert alert-info d-flex align-items-start" role="alert">
+                    <i class="fa fa-info-circle mt-1 mr-2"></i>
+                    <div>
+                        <strong><?php echo count($unlinked_teachers); ?> user account(s)</strong> have the teacher role but aren't in the teachers list yet:
+                        <ul class="mb-0 mt-2 pl-3">
                             <?php foreach ($unlinked_teachers as $unlinked): ?>
-                            <li>
+                            <li class="mb-1">
                                 <?php echo htmlspecialchars($unlinked['full_name']); ?> (<?php echo htmlspecialchars($unlinked['username']); ?>)
                                 <form method="POST" style="display:inline;" class="d-inline">
                                     <input type="hidden" name="action" value="import_from_user">
                                     <input type="hidden" name="user_id" value="<?php echo $unlinked['id']; ?>">
                                     <input type="hidden" name="full_name" value="<?php echo htmlspecialchars($unlinked['full_name']); ?>">
                                     <button type="submit" class="btn btn-sm btn-success ml-2">
-                                        <i class="fa fa-plus"></i> Import to Teachers
+                                        <i class="fa fa-plus"></i> Import
                                     </button>
                                 </form>
                             </li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
-                    <?php endif; ?>
+                </div>
+                <?php endif; ?>
 
-                    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#teacherModal">
-                        <i class="fa fa-plus"></i> Add New Teacher
-                    </button>
-                    <table class="table table-bordered table-striped">
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-striped align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Full Name</th>
                                 <th>Subject</th>
                                 <th>Phone</th>
@@ -55,26 +104,31 @@
                         <tbody>
                             <?php if (empty($teachers)): ?>
                                 <tr>
-                                    <td colspan="7" class="text-center">No teachers found</td>
+                                    <td colspan="6" class="text-center">No teachers found</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($teachers as $teacher): ?>
                                 <tr>
-                                    <td><?php echo $teacher['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($teacher['full_name']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($teacher['full_name']); ?></strong></td>
                                     <td><?php echo htmlspecialchars($teacher['subject'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($teacher['phone'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($teacher['email'] ?? ''); ?></td>
-                                    <td><?php echo htmlspecialchars($teacher['class_assigned'] ?? ''); ?></td>
                                     <td>
-                                        <a href="?edit=<?php echo $teacher['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#teacherModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($teacher)); ?>)">
-                                            <i class="fa fa-edit"></i> Edit
+                                        <?php if (!empty($teacher['class_assigned'])): ?>
+                                            <span class="badge badge-info"><?php echo htmlspecialchars($teacher['class_assigned']); ?></span>
+                                        <?php else: ?>
+                                            <span class="badge badge-light text-muted">Unassigned</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <a href="?edit=<?php echo $teacher['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#teacherModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($teacher)); ?>)" title="Edit">
+                                            <i class="fa fa-edit"></i>
                                         </a>
                                         <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this teacher?');">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $teacher['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"></i> Delete
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>

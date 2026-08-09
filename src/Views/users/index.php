@@ -1,7 +1,54 @@
+<?php
+$activeCount = count(array_filter($users, fn($u) => (bool) $u['is_active']));
+$inactiveCount = count($users) - $activeCount;
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>User Management</h2>
+            <p class="text-muted">Manage login accounts and roles for staff.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-users blue1_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($users); ?></p>
+                    <p class="head_couter">Total Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-check-circle green_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $activeCount; ?></p>
+                    <p class="head_couter">Active Accounts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-ban red_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $inactiveCount; ?></p>
+                    <p class="head_couter">Inactive Accounts</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,68 +57,69 @@
     <div class="col-md-12">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Users List</h2>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userModal">
+                        <i class="fa fa-plus"></i> Add New User
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
-                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#userModal">
-                    <i class="fa fa-plus"></i> Add New User
-                </button>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Full Name</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($users)): ?>
+                <div class="table-responsive-sm">
+                    <table class="table table-bordered table-striped align-middle">
+                        <thead>
                             <tr>
-                                <td colspan="7" class="text-center">No users found</td>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($users as $user): ?>
-                            <tr>
-                                <td><?php echo $user['id']; ?></td>
-                                <td><?php echo htmlspecialchars($user['username']); ?></td>
-                                <td><?php echo htmlspecialchars($user['full_name']); ?></td>
-                                <td>
-                                    <span class="badge badge-info"><?php echo ucfirst($user['role']); ?></span>
-                                </td>
-                                <td>
-                                    <span class="badge <?php echo $user['is_active'] ? 'badge-success' : 'badge-danger'; ?>">
-                                        <?php echo $user['is_active'] ? 'Active' : 'Inactive'; ?>
-                                    </span>
-                                </td>
-                                <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
-                                <td>
-                                    <a href="/dashboard/users?edit=<?php echo $user['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#userModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($user)); ?>)">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#passwordModal" onclick="loadPasswordData(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['username']); ?>')">
-                                        <i class="fa fa-key"></i> Password
-                                    </button>
-                                    <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                    <form method="POST" action="/dashboard/users" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-trash"></i> Delete
+                        </thead>
+                        <tbody>
+                            <?php if (empty($users)): ?>
+                                <tr>
+                                    <td colspan="6" class="text-center">No users found</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($user['full_name']); ?></strong></td>
+                                    <td>
+                                        <span class="badge badge-info"><?php echo ucfirst($user['role']); ?></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?php echo $user['is_active'] ? 'badge-success' : 'badge-danger'; ?>">
+                                            <i class="fa fa-<?php echo $user['is_active'] ? 'check-circle' : 'ban'; ?>"></i>
+                                            <?php echo $user['is_active'] ? 'Active' : 'Inactive'; ?>
+                                        </span>
+                                    </td>
+                                    <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
+                                    <td class="text-nowrap">
+                                        <a href="/dashboard/users?edit=<?php echo $user['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#userModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($user)); ?>)" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#passwordModal" onclick="loadPasswordData(<?php echo $user['id']; ?>, '<?php echo htmlspecialchars($user['username']); ?>')" title="Change Password">
+                                            <i class="fa fa-key"></i>
                                         </button>
-                                    </form>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+                                        <?php if ($user['id'] != $_SESSION['user_id']): ?>
+                                        <form method="POST" action="/dashboard/users" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

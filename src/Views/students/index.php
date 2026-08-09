@@ -1,7 +1,54 @@
+<?php
+$maleCount = count(array_filter($students, fn($s) => ($s['gender'] ?? '') === 'Male'));
+$femaleCount = count(array_filter($students, fn($s) => ($s['gender'] ?? '') === 'Female'));
+?>
 <div class="row column_title">
     <div class="col-md-12">
         <div class="page_title">
             <h2>Students Management</h2>
+            <p class="text-muted">Enroll students and keep their class and parent details up to date.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row column1">
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-users blue1_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo count($students); ?></p>
+                    <p class="head_couter">Total Students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-male green_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $maleCount; ?></p>
+                    <p class="head_couter">Male Students</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="full counter_section margin_bottom_30">
+            <div class="couter_icon">
+                <div><i class="fa fa-female purple_color"></i></div>
+            </div>
+            <div class="counter_no">
+                <div>
+                    <p class="total_no"><?php echo $femaleCount; ?></p>
+                    <p class="head_couter">Female Students</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -10,19 +57,18 @@
     <div class="col-md-12">
         <div class="white_shd full margin_bottom_30">
             <div class="full graph_head">
-                <div class="heading1 margin_0">
+                <div class="heading1 margin_0 d-flex justify-content-between align-items-center flex-wrap">
                     <h2>Students List</h2>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#studentModal">
+                        <i class="fa fa-plus"></i> Add New Student
+                    </button>
                 </div>
             </div>
             <div class="table_section padding_infor_info">
                 <div class="table-responsive-sm">
-                    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#studentModal">
-                        <i class="fa fa-plus"></i> Add New Student
-                    </button>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Full Name</th>
                                 <th>Gender</th>
                                 <th>Class</th>
@@ -34,26 +80,29 @@
                         <tbody>
                             <?php if (empty($students)): ?>
                                 <tr>
-                                    <td colspan="7" class="text-center">No students found</td>
+                                    <td colspan="6" class="text-center">No students found</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($students as $student): ?>
                                 <tr>
-                                    <td><?php echo $student['id']; ?></td>
-                                    <td><?php echo htmlspecialchars($student['full_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($student['gender']); ?></td>
+                                    <td><strong><?php echo htmlspecialchars($student['full_name']); ?></strong></td>
+                                    <td>
+                                        <span class="badge <?php echo $student['gender'] === 'Male' ? 'badge-info' : 'badge-secondary'; ?>">
+                                            <i class="fa fa-<?php echo $student['gender'] === 'Male' ? 'male' : 'female'; ?>"></i> <?php echo htmlspecialchars($student['gender']); ?>
+                                        </span>
+                                    </td>
                                     <td><?php echo htmlspecialchars($student['class']); ?></td>
                                     <td><?php echo htmlspecialchars($student['parent_name'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($student['parent_contact'] ?? ''); ?></td>
-                                    <td>
-                                        <a href="?edit=<?php echo $student['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#studentModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($student)); ?>)">
-                                            <i class="fa fa-edit"></i> Edit
+                                    <td class="text-nowrap">
+                                        <a href="?edit=<?php echo $student['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#studentModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($student)); ?>)" title="Edit">
+                                            <i class="fa fa-edit"></i>
                                         </a>
                                         <form method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?');">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"></i> Delete
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>

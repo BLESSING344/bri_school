@@ -14,11 +14,10 @@ use App\Core\Model;
  *       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
  *   );
  *
- * NOTE: The original dashboard/settings.php contained no PHP at all (it was
- * unmodified admin-template demo markup) and never read or wrote this table.
- * This model is scaffolding for future real settings functionality; it is
- * not currently invoked by SettingsController since there is no original
- * business logic to preserve. See the conversion report for details.
+ * Backs the school info / academic period form in SettingsController --
+ * the original dashboard/settings.php contained no PHP at all (it was
+ * unmodified admin-template demo markup), so this is new functionality
+ * rather than a port of prior behavior.
  */
 class SettingModel extends Model
 {
