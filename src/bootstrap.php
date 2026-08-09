@@ -2,7 +2,7 @@
 
 // Minimal .env loader (Docker Compose sets real env vars directly and does
 // not need this; it only matters when running the app without Docker).
-$envFile = __DIR__ . '/../../.env';
+$envFile = __DIR__ . '/../.env';
 if (is_file($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         $line = trim($line);

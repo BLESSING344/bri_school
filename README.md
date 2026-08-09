@@ -6,26 +6,31 @@ backed by PostgreSQL, and fully dockerized.
 
 > Note: this repo was originally scaffolded with `laravel new`, but the app
 > itself does not run through Laravel's `app/`, `routes/`, or `artisan` — the
-> real application is a self-contained MVC app living entirely under
-> `public/`. The Laravel skeleton files remain in the repo but are unused at
-> runtime.
+> real application is a self-contained MVC app in `src/`. The Laravel
+> skeleton files remain in the repo but are unused at runtime.
 
 ## Architecture
 
 ```
+src/
+  Core/            # Database (PDO/Postgres singleton), Model, Controller, Auth
+  Models/          # StudentModel, TeacherModel, SchoolClassModel, AttendanceModel, ...
+  Controllers/      # StudentController, TeacherController, DashboardController, ...
+  Views/            # One folder per module; layout/header.php + layout/footer.php wrap every page
+  bootstrap.php     # autoloader + session bootstrap, loaded by every entry script
+db/
+  schema.sql         # Postgres DDL
+  seed.php            # idempotent seeder with realistic sample data
 public/
-  app/
-    Core/            # Database (PDO/Postgres singleton), Model, Controller, Auth
-    Models/          # StudentModel, TeacherModel, SchoolClassModel, AttendanceModel, ...
-    Controllers/      # StudentController, TeacherController, DashboardController, ...
-    Views/            # One folder per module; layout/header.php + layout/footer.php wrap every page
-    bootstrap.php     # autoloader + session bootstrap, loaded by every entry script
-  database/
-    schema.sql         # Postgres DDL
-    seed.php            # idempotent seeder with realistic sample data
   dashboard/*.php        # thin entry scripts, e.g. `(new App\Controllers\StudentController())->index();`
   login.php, logout.php, index.php   # auth entry scripts
+  css/, js/, images/, fonts/          # static assets
 ```
+
+Only `public/` is the web server's document root. `src/` and `db/` sit
+outside it, so application code and the seeder are never reachable by a
+direct HTTP request no matter how the web server is configured — the only
+way in is through the thin entry scripts.
 
 Each page under `public/dashboard/*.php` is a thin front controller that
 delegates to a `Controller` class, which uses a `Model` for data access and
@@ -43,7 +48,7 @@ This starts:
 - `db` — PostgreSQL 16, exposed on host port 5433 (in case you want to inspect it with a local client)
 
 On boot, the app container waits for Postgres to become healthy, then runs
-`public/database/seed.php`, which creates the schema (if missing) and seeds
+`db/seed.php`, which creates the schema (if missing) and seeds
 sample data. It's safe to restart the stack repeatedly — seeding is
 idempotent.
 
@@ -66,14 +71,14 @@ vars from the managed database into the web service.
 The container (`Dockerfile` + `.docker/`) runs nginx and PHP-FPM under
 supervisord in a single image, listening on port 8080 — the same image is
 used for both Render and local `docker compose`. On boot, `.docker/start.sh`
-waits for Postgres, runs `public/database/seed.php` (idempotent), then starts
+waits for Postgres, runs `db/seed.php` (idempotent), then starts
 the server. Render's health check hits `/health.php`, a dependency-free
 endpoint that doesn't touch the database.
 
 ## Running without Docker
 
 1. Copy `.env.example` to `.env` and point `DB_*` at a Postgres instance you control.
-2. `php public/database/seed.php` to create the schema and seed data.
+2. `php db/seed.php` to create the schema and seed data.
 3. `php -S localhost:8000 -t public` to serve the app, then visit `http://localhost:8000`.
 
 ## Notes

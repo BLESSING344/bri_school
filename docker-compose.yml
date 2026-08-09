@@ -15,6 +15,8 @@ services:
         condition: service_healthy
     volumes:
       - ./public:/var/www/html/public
+      - ./src:/var/www/html/src
+      - ./db:/var/www/html/db
 
   postgres:
     image: postgres:16-alpine

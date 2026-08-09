@@ -18,6 +18,6 @@ echo "Postgres is up."
 
 # Creates the schema (if missing) and seeds sample data. Safe to re-run on
 # every deploy/restart: every insert is guarded by an existence check.
-php /var/www/html/public/database/seed.php || echo "Seed script reported an error (continuing to start the server)."
+php /var/www/html/db/seed.php || echo "Seed script reported an error (continuing to start the server)."
 
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
