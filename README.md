@@ -44,8 +44,8 @@ docker compose up --build
 ```
 
 This starts:
-- `app` — PHP 8.2 + Apache, served at http://localhost:8080
-- `db` — PostgreSQL 16, exposed on host port 5433 (in case you want to inspect it with a local client)
+- `app` — nginx + PHP-FPM, served at http://localhost:8080
+- `postgres` — PostgreSQL 16, exposed on host port 5432 (in case you want to inspect it with a local client)
 
 On boot, the app container waits for Postgres to become healthy, then runs
 `db/seed.php`, which creates the schema (if missing) and seeds

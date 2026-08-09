@@ -8,9 +8,13 @@
  * Safe to run multiple times: every insert is guarded by an existence check.
  */
 
+require_once __DIR__ . '/../src/Core/Env.php';
 require_once __DIR__ . '/../src/Core/Database.php';
 
 use App\Core\Database;
+use App\Core\Env;
+
+Env::load(__DIR__ . '/../.env');
 
 $pdo = Database::connection();
 
