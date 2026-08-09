@@ -3,12 +3,55 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Models\MarkModel;
 use App\Models\SchoolClassModel;
 use App\Models\StudentModel;
 use PDOException;
 
 class StudentController extends Controller
 {
+    public function reportCard(): void
+    {
+        $this->requireRole(['admin', 'teacher']);
+
+        $id = (int) $this->input('id', 0);
+        $student = $id ? (new StudentModel())->find($id) : null;
+
+        if (!$student) {
+            $this->redirect('/dashboard/students?error=' . rawurlencode('Student not found'));
+        }
+
+        $marks = (new MarkModel())->forStudent($id);
+
+        foreach ($marks as &$mark) {
+            [$mark['grade'], $mark['remark']] = self::gradeFor((float) $mark['score']);
+        }
+        unset($mark);
+
+        $this->renderBare('students/report_card', [
+            'page_title' => 'Report Card',
+            'student' => $student,
+            'marks' => $marks,
+        ]);
+    }
+
+    /**
+     * @return array{0: string, 1: string} [grade, remark] for a percentage score.
+     */
+    private static function gradeFor(float $score): array
+    {
+        return match (true) {
+            $score >= 80 => ['D1', 'Excellent'],
+            $score >= 70 => ['D2', 'Very Good'],
+            $score >= 60 => ['C3', 'Good'],
+            $score >= 50 => ['C4', 'Fair'],
+            $score >= 40 => ['C5', 'Fair'],
+            $score >= 30 => ['C6', 'Pass'],
+            $score >= 20 => ['P7', 'Pass'],
+            $score >= 10 => ['P8', 'Weak'],
+            default => ['F9', 'Weak'],
+        };
+    }
     public function index(): void
     {
         $this->requireRole(['admin', 'teacher']);

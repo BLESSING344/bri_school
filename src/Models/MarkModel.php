@@ -24,6 +24,21 @@ class MarkModel extends Model
     }
 
     /**
+     * All marks recorded for a student, across every exam, joined with exam info.
+     */
+    public function forStudent($studentId): array
+    {
+        return $this->query(
+            'SELECT m.*, e.exam_name, e.term, e.year
+             FROM marks m
+             JOIN exams e ON m.exam_id = e.id
+             WHERE m.student_id = ?
+             ORDER BY e.year DESC, e.term, m.subject',
+            [$studentId]
+        )->fetchAll();
+    }
+
+    /**
      * Find an existing mark for a given student/exam/subject combination, if any.
      */
     public function findExisting($studentId, $examId, string $subject): ?array

@@ -95,6 +95,9 @@ $femaleCount = count(array_filter($students, fn($s) => ($s['gender'] ?? '') === 
                                     <td><?php echo htmlspecialchars($student['parent_name'] ?? ''); ?></td>
                                     <td><?php echo htmlspecialchars($student['parent_contact'] ?? ''); ?></td>
                                     <td class="text-nowrap">
+                                        <a href="/dashboard/students/report-card?id=<?php echo $student['id']; ?>" class="btn btn-sm btn-outline-secondary" target="_blank" title="Report Card">
+                                            <i class="fa fa-file-text"></i>
+                                        </a>
                                         <a href="?edit=<?php echo $student['id']; ?>" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#studentModal" onclick="loadEditData(<?php echo htmlspecialchars(json_encode($student)); ?>)" title="Edit">
                                             <i class="fa fa-edit"></i>
                                         </a>

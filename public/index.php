@@ -20,6 +20,7 @@ $routes = [
     '/logout' => [AuthController::class, 'logout'],
     '/dashboard' => [DashboardController::class, 'index'],
     '/dashboard/students' => [StudentController::class, 'index'],
+    '/dashboard/students/report-card' => [StudentController::class, 'reportCard'],
     '/dashboard/classes' => [ClassController::class, 'index'],
     '/dashboard/teachers' => [TeacherController::class, 'index'],
     '/dashboard/attendance' => [AttendanceController::class, 'index'],
